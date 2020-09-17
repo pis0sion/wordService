@@ -1,0 +1,17 @@
+{
+    "name": "pis0sion/php-office",
+    "description": "generate word document for api",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "phpoffice/phpword": "dev-master",
+      "ext-json": "*",
+      "ext-zip": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pis0sion\\src\\": "src/"
+        }
+    }
+}
