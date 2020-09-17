@@ -120,7 +120,7 @@ class GenerateWordDoc
             @mkdir($this->savePath);
         }
         $fileName = $key . "-" . $parameter["name"] . "-" . uniqid() . ".docx";
-        $wordService->saveAs($this->savePath . "\\" . $fileName);
+        $wordService->saveAs($this->savePath . "/" . $fileName);
         return $this->savePath;
     }
 

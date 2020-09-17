@@ -193,8 +193,9 @@ class CreateWordService
         if ($originStr == false || $originStr == null) {
             return "null";
         }
+
         // json 数据做美化
-        $regex = json_encode($originStr, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        return str_replace(array("\r\n", "\r", "\n"), "<w:br />", $regex);
+        $regex = json_encode($originStr, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return str_replace(array("\r\n", "\r", "\n"), "<w:br />" . "\r", $regex);
     }
 }

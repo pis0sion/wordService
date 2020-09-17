@@ -91,5 +91,23 @@ class CreateZipArchiveService implements IZipArchiveFactoryInterface
         $this->compress_file = $compress_file;
     }
 
+    /**
+     *  down files
+     */
+    public function downloadCompressFile()
+    {
+        if (!file_exists($this->getCompressFile())) {
+            header('HTTP/1.1 404 NOT FOUND');
+        } else {
+            $file = fopen($this->getCompressFile(), "rb");
+            Header("Content-type: application/octet-stream");
+            Header("Accept-Ranges: bytes");
+            Header("Accept-Length: " . filesize($this->getCompressFile()));
+            Header("Content-Disposition: attachment; filename=" . basename($this->getCompressFile()));
+            echo fread($file, filesize($this->getCompressFile()));
+            fclose($file);
+            exit ();
+        }
+    }
 
 }

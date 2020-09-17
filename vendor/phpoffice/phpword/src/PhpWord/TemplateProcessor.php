@@ -663,7 +663,6 @@ class TemplateProcessor
         $search = static::ensureMacroCompleted($search);
         $tagPos = strpos($this->tempDocumentMainPart, $search);
 
-        file_put_contents("log.txt",$this->tempDocumentMainPart) ;
         if (!$tagPos) {
             throw new Exception('Can not clone row, template variable not found or variable contains markup.');
         }
