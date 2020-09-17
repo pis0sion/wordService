@@ -6,8 +6,10 @@
     "minimum-stability": "stable",
     "require": {
         "phpoffice/phpword": "dev-master",
-      "ext-json": "*",
-      "ext-zip": "*"
+        "ext-json": "*",
+        "ext-zip": "*",
+        "ext-gd2": "*",
+        "ext-xsl": "*"
     },
     "autoload": {
         "psr-4": {
