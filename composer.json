@@ -5,11 +5,7 @@
     "license": "MIT",
     "minimum-stability": "stable",
     "require": {
-        "phpoffice/phpword": "dev-master",
-        "ext-json": "*",
-        "ext-zip": "*",
-        "ext-gd2": "*",
-        "ext-xsl": "*"
+        "phpoffice/phpword": "dev-master"
     },
     "autoload": {
         "psr-4": {
