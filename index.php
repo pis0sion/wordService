@@ -31,7 +31,6 @@ $global_paras = [
     "body" => [],
 ];
 
-
 (new WordService())->run($list, $global_paras);
 
 /**
