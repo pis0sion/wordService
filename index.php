@@ -18,7 +18,7 @@ $list = [
         'name' => '新建接口1',
         'method' => 'POST',
         'mark' => 'developing',
-        'target_type' => 'api',
+        'target_type' => 'doc',
         'update_day' => '1600099200',
         'update_dtime' => '2020-09-15 18:30:38',
         'sort' => '0',
@@ -830,7 +830,7 @@ class WordService
         // 删除目录及其文件
         $compressService->deleteFiles($word->getSavePath());
         // 下载文件
-        $compressService->downloadCompressFile();
+        var_dump($compressService->getCompressFile());
     }
 
 }

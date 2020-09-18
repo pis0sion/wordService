@@ -15,6 +15,13 @@ use Pis0sion\src\component\IWordTemplateFactoryInterface;
  */
 class CreateTemplateService implements IWordTemplateFactoryInterface
 {
+    /**
+     * @var array
+     */
+    protected static $template = [
+        "api" => "./template/tmpl.docx",
+        "doc" => "./template/doc.docx"
+    ];
 
     /**
      * @param string $filename
@@ -25,6 +32,11 @@ class CreateTemplateService implements IWordTemplateFactoryInterface
     public static function createTemplateFactory(string $filename): TemplateProcessor
     {
         // TODO: Implement createTemplateFactory() method.
-        return new TemplateProcessor($filename);
+
+        if (!array_key_exists($filename, self::$template)) {
+            throw new \RuntimeException("template is not exist ...");
+        }
+        $path = self::$template[$filename];
+        return new TemplateProcessor($path);
     }
 }

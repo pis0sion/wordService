@@ -50,78 +50,83 @@ class GenerateWordDoc
      */
     public function create(array $parameter, int $key, array $globalVars = [])
     {
-        /**
-         * 创建word模板
-         */
-        $templateProcessor = CreateTemplateService::createTemplateFactory("tmpl.docx");
+        // 获取模板的类型
+        $templateType = trim($parameter["target_type"]);
+        $templateProcessor = CreateTemplateService::createTemplateFactory($templateType);
         $wordService = new CreateWordService($templateProcessor);
+        $wordService = $this->renderBaseTemplate($wordService, $parameter);
+        // 假如模板是api
+        if ($templateType == "api") {
+            // 渲染基础信息
+            $wordService->renderTextRun("DepState", $this->obtainMarkText($parameter));
 
-        /**
-         * 渲染模板
-         */
-        $description = $this->achieveDescription($parameter["request"]);
-        // 标题和更新时间
-        $wordService->renderTextRun("TitleName", $parameter["name"]);
+            $wordService->renderTextRun("ReqUrl", $parameter["request"]["url"]);
 
-        $wordService->renderTextRun("UpTime", $parameter["update_dtime"]);
-        // 渲染接口简介
-        $wordService->renderTextRun("Description", $description);
+            $wordService->renderTextRun("ReqMethod", $parameter["method"]);
 
-        // 渲染基础信息
-        $wordService->renderTextRun("DepState", $this->obtainMarkText($parameter));
+            $wordService->renderTextRun("ReqContentType", $parameter["request"]["body"]["mode"]);
 
-        $wordService->renderTextRun("ReqUrl", $parameter["request"]["url"]);
+            // 是否含有全局参数
+            list($gHeaderParams, $gBodyParams, $gQueryParams) = [$globalVars["header"] ?? [], $globalVars["body"] ?? [], $globalVars["query"] ?? []];
 
-        $wordService->renderTextRun("ReqMethod", $parameter["method"]);
+            /**
+             * 渲染表格
+             */
+            $HBlock = $parameter['request']['header']['parameter'] ?? [];
+            $HBlock = $this->mergeGlobalParameters($gHeaderParams, $HBlock);
 
-        $wordService->renderTextRun("ReqContentType", $parameter["request"]["body"]["mode"]);
+            /**
+             * query parameter
+             */
+            $QBlock = $parameter['request']['query']['parameter'] ?? [];
+            $QBlock = $this->mergeGlobalParameters($gQueryParams, $QBlock);
 
-        // 是否含有全局参数
-        list($gHeaderParams, $gBodyParams, $gQueryParams) = [$globalVars["header"] ?? [], $globalVars["body"] ?? [], $globalVars["query"] ?? []];
+            /**
+             * body parameter
+             */
+            $BodyBlock = $parameter['request']['body']['raw_para'] ?? [];
+            $BodyBlock = $this->mergeGlobalParameters($gBodyParams, $BodyBlock);
 
-        /**
-         * 渲染表格
-         */
-        $HBlock = $parameter['request']['header']['parameter'] ?? [];
-        $HBlock = $this->mergeGlobalParameters($gHeaderParams, $HBlock);
+            /**
+             * restful  parameter
+             */
+            $RestFulBlock = $parameter['request']['resful']['parameter'] ?? [];
 
-        /**
-         * query parameter
-         */
-        $QBlock = $parameter['request']['query']['parameter'] ?? [];
-        $QBlock = $this->mergeGlobalParameters($gQueryParams, $QBlock);
+            /**
+             * response  parameter
+             */
+            $RespBlock = $parameter['response']['success']['parameter'] ?? [];
 
-        /**
-         * body parameter
-         */
-        $BodyBlock = $parameter['request']['body']['raw_para'] ?? [];
-        $BodyBlock = $this->mergeGlobalParameters($gBodyParams, $BodyBlock);
+            //  批量渲染表格
+            $wordService->multiRenderBlock(compact("HBlock", "QBlock", "BodyBlock", "RestFulBlock", "RespBlock"));
 
-        /**
-         * restful  parameter
-         */
-        $RestFulBlock = $parameter['request']['resful']['parameter'] ?? [];
+            //  渲染响应示例
+            $respJson = $parameter['response']['success']['raw'] ?? "";
+            $resp = $wordService->prettify($respJson);
+            $wordService->renderTextRun("RespJson", $resp);
+        }
 
-        /**
-         * response  parameter
-         */
-        $RespBlock = $parameter['response']['success']['parameter'] ?? [];
-
-        //  批量渲染表格
-        $wordService->multiRenderBlock(compact("HBlock", "QBlock", "BodyBlock", "RestFulBlock", "RespBlock"));
-
-        //  渲染响应示例
-        $respJson = $parameter['response']['success']['raw'] ?? "";
-        $resp = $wordService->prettify($respJson);
-        $wordService->renderTextRun("RespJson", $resp);
-
-        //  设置生成文件的目录
+        // 设置生成文件的目录
         if (!is_dir($this->savePath)) {
             @mkdir($this->savePath);
         }
         $fileName = $key . "-" . $parameter["name"] . "-" . uniqid() . ".docx";
         $wordService->saveAs($this->savePath . "/" . $fileName);
         return $this->savePath;
+    }
+
+    /**
+     * @param $wordService
+     * @param $parameter
+     * @return mixed
+     */
+    protected function renderBaseTemplate($wordService, $parameter)
+    {
+        $description = $this->achieveDescription($parameter["request"]);
+        $wordService->renderTextRun("TitleName", $parameter["name"]);
+        $wordService->renderTextRun("UpTime", $parameter["update_dtime"]);
+        $wordService->renderTextRun("Description", $description);
+        return $wordService;
     }
 
     /**
