@@ -1,66 +1,26 @@
 <?php
 
 
-use PalePurple\RateLimit\RateLimit;
+namespace Pis0sion\src\entity;
+
+
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
-use Pis0sion\src\entity\GenerateWordDoc;
 use Pis0sion\src\service\CreateZipArchiveService;
-
-include_once "vendor/autoload.php";
-
-// 防止文件deleteBlock 和 cloneBlock 失效
-ini_set('pcre.backtrack_limit', 999999999999);
-
-$test_params = file_get_contents("data.json");
-
-$list = json_decode($test_params, true);
-// 数据列表
-
-// 全局参数
-$global_paras = [
-    "header" =>
-        [
-            [
-                "is_checked" => 1,
-                "type" => "Text",
-                "key" => "token_global",
-                "value" => "456",
-                "description" => ""
-            ]
-        ],
-    "query" => [],
-    "body" => [],
-];
-
-$redis = new \Redis();
-//   redis 链接
-$redis->connect("192.138.0.1", "6379");
-
-$adapter = new \PalePurple\RateLimit\Adapter\Redis($redis);
-
-$rateLimit = new RateLimit("myratelimit", 1, 60, $adapter);
-
-$id = $_SERVER["REMOTE_ADDR"];
-
-if ($rateLimit->check($id)) {
-    (new WordService())->run($list, $global_paras);
-} else {
-    echo "rate limit exceeded";
-}
-
+use Throwable;
 
 /**
- * Class WordService
+ * Class WordServiceEntity
+ * @package Pis0sion\src\entity
  */
-class WordService
+class WordServiceEntity
 {
     /**
      * @param array $list
      * @param array $global_paras
      * @throws Throwable
      * @throws CopyFileException
-     * @throws CreateTemporaryFileException
+     * @throws CreateTemporaryFileException|\Throwable
      */
     public function run(array $list, array $global_paras)
     {
@@ -93,14 +53,3 @@ class WordService
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
