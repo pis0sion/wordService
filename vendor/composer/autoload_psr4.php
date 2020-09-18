@@ -10,4 +10,5 @@ return array(
     'Pis0sion\\src\\' => array($baseDir . '/src'),
     'PhpOffice\\PhpWord\\' => array($vendorDir . '/phpoffice/phpword/src/PhpWord'),
     'PhpOffice\\Common\\' => array($vendorDir . '/phpoffice/common/src/Common'),
+    'PalePurple\\RateLimit\\' => array($vendorDir . '/palepurple/rate-limit/src'),
 );

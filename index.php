@@ -72,7 +72,7 @@ class WordService
         // 删除目录及其文件
         $compressService->deleteFiles($word->getSavePath());
         // 下载文件
-        var_dump($compressService->getCompressFile());
+        $compressService->downloadCompressFile();
     }
 
 }

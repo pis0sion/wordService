@@ -6,7 +6,9 @@
     "minimum-stability": "stable",
     "require": {
         "phpoffice/phpword": "dev-master",
-        "ext-json": "*"
+        "ext-json": "*",
+        "palepurple/rate-limit": "^2.0",
+      "ext-redis": "*"
     },
     "autoload": {
         "psr-4": {
